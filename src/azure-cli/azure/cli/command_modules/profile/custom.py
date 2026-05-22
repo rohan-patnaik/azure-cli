@@ -171,10 +171,15 @@ def login(cmd, username=None, password=None, tenant=None, scopes=None, allow_no_
             logger.warning(USERNAME_PASSWORD_DEPRECATION_WARNING_OTHER_CLOUD)
     # todo: broker_sso incompatible with workload identities
     # broker_sso relies on the presence of a broker, which is only available on Windows (for now)
-    if use_broker_sso and not (sys.platform.startswith('win') and cmd.cli_ctx.config.getboolean('core', 'enable_broker_on_windows', fallback=True)):
+    if use_broker_sso and not (
+        sys.platform.startswith('win')
+        and cmd.cli_ctx.config.getboolean('core',
+                                          'enable_broker_on_windows',
+                                          fallback=True)):
         raise CLIError("usage error: '--use-broker-sso' is only supported on Windows with broker enabled")
     if use_broker_sso and (service_principal or identity):
-        raise CLIError("usage error: '--use-broker-sso' is not applicable to service principal or managed identity login")
+        raise CLIError("usage error: '--use-broker-sso' is not applicable "
+                       "to service principal or managed identity login")
 
     if claims_challenge:
         from azure.cli.core.util import b64decode
