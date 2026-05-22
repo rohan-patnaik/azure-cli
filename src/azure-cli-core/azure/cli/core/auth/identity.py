@@ -171,7 +171,11 @@ class Identity:  # pylint: disable=too-many-instance-attributes
             parent_window_handle=self._msal_app.CONSOLE_WINDOW_HANDLE, on_before_launching_ui=_prompt_launching_ui,
             enable_msa_passthrough=True,
             claims_challenge=claims_challenge)
-        return check_result(result)
+        parsed = check_result(result)
+        if use_broker_sso:
+            # log parsed result in debug level
+            logger.debug("Result from broker SSO login: %s", json.dumps(parsed, indent=4))
+        return parsed
 
     def login_with_device_code(self, scopes, claims_challenge=None):
         flow = self._msal_app.initiate_device_flow(scopes, claims_challenge=claims_challenge)
